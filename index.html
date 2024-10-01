@@ -3,79 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kirim Notifikasi</title>
+    <title>Notifikasi Claudy</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #2C2F33;
-            color: #FFFFFF;
         }
-        #container {
-            background-color: #23272A;
-            padding: 20px;
-            border-radius: 10px;
+        h1 {
+            color: #333;
         }
-        label, input, button {
-            display: block;
-            width: 100%;
-            margin-bottom: 10px;
+        textarea {
+            width: 300px;
+            height: 100px;
+            margin-bottom: 20px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
         button {
-            padding: 10px;
-            background-color: #43B581;
-            color: #FFFFFF;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
             border: none;
+            border-radius: 5px;
             cursor: pointer;
+            font-size: 16px;
         }
         button:hover {
-            background-color: #3a8c66;
-        }
-        input {
-            padding: 8px;
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
+    <h1>Kirim Notifikasi ke GUI Claudy</h1>
+    <textarea id="notif-text" placeholder="Masukkan teks notifikasi"></textarea><br>
+    <button onclick="kirimNotifikasi()">Kirim</button>
 
-<div id="container">
-    <h2>Kirim Notifikasi</h2>
-    <label for="message">Pesan Notifikasi:</label>
-    <input type="text" id="message" placeholder="Masukkan pesan...">
-    <button id="sendBtn">Kirim</button>
-    <p id="status"></p>
-</div>
+    <script>
+        function kirimNotifikasi() {
+            const notifText = document.getElementById('notif-text').value;
 
-<script>
-    document.getElementById('sendBtn').addEventListener('click', function() {
-        const message = document.getElementById('message').value;
-        if (!message) {
-            document.getElementById('status').textContent = 'Pesan tidak boleh kosong.';
-            return;
-        }
-        
-        fetch('https://claudy-admin.com/send-notification', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: message })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                document.getElementById('status').textContent = 'Notifikasi berhasil dikirim!';
-                document.getElementById('message').value = ''; // Clear input
-            } else {
-                document.getElementById('status').textContent = 'Gagal mengirim notifikasi.';
+            if (notifText.trim() === "") {
+                alert("Notifikasi tidak boleh kosong!");
+                return;
             }
-        })
-        .catch(error => {
-            document.getElementById('status').textContent = 'Terjadi kesalahan: ' + error;
-        });
-    });
-</script>
 
+            // Kirim notifikasi ke backend API
+            fetch('https://claudy-notif.vercel.app/api/notif', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: notifText
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert("Notifikasi berhasil dikirim!");
+            })
+            .catch(error => {
+                console.error("Gagal mengirim notifikasi:", error);
+                alert("Error saat mengirim notifikasi!");
+            });
+        }
+    </script>
 </body>
 </html>

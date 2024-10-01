@@ -1,24 +1,37 @@
+// server.js
+
 const express = require('express');
-const app = express();
 const cors = require('cors');
+const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-let notifications = "";
+let currentNotification = "";
 
-app.post('/send-notification', (req, res) => {
+// Endpoint untuk menerima notifikasi baru
+app.post('/api/notif', (req, res) => {
     const { message } = req.body;
-    if (message) {
-        notifications = message;
-        return res.status(200).json({ success: true, message: "Notification sent!" });
+    if (!message) {
+        return res.status(400).json({ error: "Notifikasi tidak boleh kosong" });
+    }
+    
+    // Simpan pesan notifikasi
+    currentNotification = message;
+    console.log("Notifikasi diterima:", message);
+
+    return res.status(200).json({ success: true, message: "Notifikasi berhasil dikirim!" });
+});
+
+// Endpoint untuk mengambil notifikasi
+app.get('/api/notif', (req, res) => {
+    if (currentNotification) {
+        return res.json({ message: currentNotification });
     } else {
-        return res.status(400).json({ success: false, message: "Message cannot be empty!" });
+        return res.json({ message: "" });
     }
 });
 
-app.get('/get-notification', (req, res) => {
-    return res.status(200).json({ notification: notifications });
+app.listen(3000, () => {
+    console.log('Server berjalan di port 3000');
 });
-
-module.exports = app;
