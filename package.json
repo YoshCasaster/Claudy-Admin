@@ -1,0 +1,10 @@
+{
+    "name": "claudy-admin",
+    "version": "1.0.0",
+    "description": "Aplikasi Notifikasi",
+    "main": "index.js",
+    "scripts": {
+        "start": "vercel dev"
+    },
+    "dependencies": {}
+}
